@@ -1,0 +1,34 @@
+args:
+- isArray: true
+  name: fieldName
+commonfields:
+  id: fb4e5aa5-2002-4773-8cf5-4fab9c430044
+  version: -1
+dockerimage: demisto/python3:3.8.5.10845
+enabled: true
+name: extractCustomFieldA
+pswd: ""
+runas: DBotWeakRole
+runonce: false
+script: |+
+  from pprint import pformat
+
+
+  def main():
+      value = argToList(demisto.args()['fieldName'])
+
+      r = requests.get(url="https://<Replace URL>/incidentfields/export" , headers = {"Authorization":"1455677E29F418577113A1E0F320C920"}, verify=False)
+      input_dict = json.loads(r.content)
+      output_dict = [x for x in input_dict['incidentFields'] if x['cliName'] in value]
+      output_dict= {"incidentFields":output_dict}
+      output_json = json.dumps(output_dict)
+      demisto.results(output_json)
+
+
+  if __name__ in ["__builtin__", "builtins"]:
+      main()
+
+scripttarget: 0
+subtype: python3
+tags: []
+type: python
